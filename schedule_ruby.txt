@@ -1,0 +1,5 @@
+To complete by November 7:
+1. Preprocess CRU data for the following varibles: cld, dtr, frs, pet
+2. Preprocess data for the different time ranges.
+2. Use those variables to make time series plots
+3. Integrate different data variables into one.
