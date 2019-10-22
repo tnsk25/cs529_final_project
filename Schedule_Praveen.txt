@@ -1,0 +1,4 @@
+1. Preprocess CRU data for the following varibles: tmx, vap, wet
+2. Preprocess data for the different time ranges. 
+3. Use those variables to make time series plots
+4. Integrate different data variables into one.
