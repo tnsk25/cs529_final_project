@@ -67,11 +67,10 @@ d3.json("./data/test.geojson",function(error,citydata) {
     .attr("fill", function(d) {
       return color_scale(d['properties']['Values']);
     })
-    .on("mouseover",showTooltipcoord)
-    .on("mousemove",moveTooltipcoord)
-    .on("mouseout",hideTooltipcoord)
-    .on("click",clickedcoord);
-
+    //.on("mouseover",showTooltipcoord)
+    //.on("mousemove",moveTooltipcoord)
+    //.on("mouseout",hideTooltipcoord)
+    //.on("click",clickedcoord);
     $(".loading").css("opacity","0");
 });
 
