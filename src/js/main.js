@@ -67,11 +67,11 @@ d3.json("./data/test.geojson",function(error,citydata) {
     .attr("fill", function(d) {
       return color_scale(d['properties']['Values']);
     })
-    .on("mouseover",showTooltipcoord)
-    .on("mousemove",moveTooltipcoord)
-    .on("mouseout",hideTooltipcoord)
-    .on("click",clickedcoord);
-
+    //.on("mouseover",showTooltipcoord)
+    //.on("mousemove",moveTooltipcoord)
+    //.on("mouseout",hideTooltipcoord)
+    //.on("click",clickedcoord);
+    $(".loading").css("opacity","0");
 });
 
 // Add optional onClick events for features here
@@ -110,3 +110,39 @@ function moveTooltip() {
 function hideTooltip() {
   tooltip.style("display","none");
 }
+
+let leftSideBarShown = true;
+
+function toggleLeftSideBar(e) {
+  if (e) {
+    stopPropagation(e);
+    e.preventDefault();
+  }
+  const left = document.getElementById('left');
+  if (leftSideBarShown) {
+    left.classList.add("minimized");
+    left.addEventListener("click", toggleLeftSideBar);
+  } else {
+    left.classList.remove("minimized");
+    left.removeEventListener("click", toggleLeftSideBar);
+  }
+  leftSideBarShown = !leftSideBarShown;
+}
+
+function stopPropagation(evt) {
+  if (evt.stopPropagation !== undefined) {
+    evt.stopPropagation();
+  } else {
+    evt.cancelBubble = true;
+  }
+}
+
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+
