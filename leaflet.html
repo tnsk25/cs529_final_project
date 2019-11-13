@@ -27,7 +27,7 @@
 		// .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
 
 	// L.circle([52.5, -0.01]).addTo(mymap);
-		// .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();	
+		// .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
 
 	// L.circle([51.508, -0.11], 500, {
 	// 	color: 'red',
@@ -68,7 +68,7 @@
 	}
 
 	// Use jQuery's getJSON method to fetch the data from a URL
-	jQuery.getJSON( "test.geojson", function( json ) {
+	jQuery.getJSON( "./data/test.geojson", function( json ) {
 	  // Use Leaflet's geoJSON method to turn the data into a feature layer
 	  L.geoJSON( json, {
 	    pointToLayer: createCircleMarker // Call the function createCircleMarker to create the symbol for this layer
