@@ -10,6 +10,21 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <div class="left-side-bar" id="left">
+      <button onclick="toggleLeftSideBar(event)" class="close"></button>
+      <div class="card">
+        <h1>Variables</h1>
+        <form>
+          <div class="form-group">
+            <label for="sel1">Climatic Variables (select one):</label>
+            <select class="form-control" id="sel1">
+              <option id="temp">Temperature</option>
+              <option id="precip">Precipitation</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
     <div class="map-div"></div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>

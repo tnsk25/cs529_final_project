@@ -110,3 +110,29 @@ function moveTooltip() {
 function hideTooltip() {
   tooltip.style("display","none");
 }
+
+let leftSideBarShown = true;
+
+function toggleLeftSideBar(e) {
+  if (e) {
+    stopPropagation(e);
+    e.preventDefault();
+  }
+  const left = document.getElementById('left');
+  if (leftSideBarShown) {
+    left.classList.add("minimized");
+    left.addEventListener("click", toggleLeftSideBar);
+  } else {
+    left.classList.remove("minimized");
+    left.removeEventListener("click", toggleLeftSideBar);
+  }
+  leftSideBarShown = !leftSideBarShown;
+}
+
+function stopPropagation(evt) {
+  if (evt.stopPropagation !== undefined) {
+    evt.stopPropagation();
+  } else {
+    evt.cancelBubble = true;
+  }
+}
