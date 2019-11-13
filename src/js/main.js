@@ -72,6 +72,7 @@ d3.json("./data/test.geojson",function(error,citydata) {
     .on("mouseout",hideTooltipcoord)
     .on("click",clickedcoord);
 
+    $(".loading").css("opacity","0");
 });
 
 // Add optional onClick events for features here
