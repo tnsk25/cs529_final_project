@@ -1,5 +1,5 @@
 var color_scale = d3.scale.linear().domain([-50,50]).range(["red","blue"]);
-
+var cli_variable="tmp",year=1901;
 //Map dimensions (in pixels)
 var width = 1200,
     height = 800;
@@ -51,27 +51,29 @@ d3.json("./data/countries.geojson",function(error,geodata) {
 });
 
 
-var coord_details = svg.append( "g" );
+var coord_details = svg.append( "g" ).attr("class","points");
 
-d3.json("./data/test.geojson",function(error,citydata) {
+var datafile = "./data/"+cli_variable+"/"+year+".geojson";
+
+d3.json(datafile,function(error,geodata) {
   if (error) return console.log(error); //unknown error, check the console
 
   //Create a path for each map feature in the data
   coord_details.selectAll("circle")
-    .data(citydata.features)
+    .data(geodata.features)
     .enter()
     .append("circle")
     .attr("class", "circle")
     .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
     .attr('r',1)
     .attr("fill", function(d) {
-      return color_scale(d['properties']['Values']);
+      return color_scale(d['properties']['Value']);
     })
-    .on("mouseover",showTooltipcoord)
-    .on("mousemove",moveTooltipcoord)
-    .on("mouseout",hideTooltipcoord)
-    .on("click",clickedcoord);
-
+    //.on("mouseover",showTooltipcoord)
+    //.on("mousemove",moveTooltipcoord)
+    //.on("mouseout",hideTooltipcoord)
+    //.on("click",clickedcoord);
+    $(".loading").css("opacity","0");
 });
 
 // Add optional onClick events for features here
@@ -110,3 +112,101 @@ function moveTooltip() {
 function hideTooltip() {
   tooltip.style("display","none");
 }
+
+let leftSideBarShown = true;
+
+function toggleLeftSideBar(e) {
+  if (e) {
+    stopPropagation(e);
+    e.preventDefault();
+  }
+  const left = document.getElementById('left');
+  if (leftSideBarShown) {
+    left.classList.add("minimized");
+    left.addEventListener("click", toggleLeftSideBar);
+  } else {
+    left.classList.remove("minimized");
+    left.removeEventListener("click", toggleLeftSideBar);
+  }
+  leftSideBarShown = !leftSideBarShown;
+}
+
+function stopPropagation(evt) {
+  if (evt.stopPropagation !== undefined) {
+    evt.stopPropagation();
+  } else {
+    evt.cancelBubble = true;
+  }
+}
+
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  year = this.value;
+
+  $(".loading").css("opacity","1");
+  svg.selectAll(".points circle").remove();
+
+  var updated_datafile = "./data/"+cli_variable+"/"+year+".geojson";
+
+  d3.json(updated_datafile,function(error,geodata) {
+    if (error) return console.log(error); //unknown error, check the console
+
+    //Create a path for each map feature in the data
+    coord_details.selectAll("circle")
+      .data(geodata.features)
+      .enter()
+      .append("circle")
+      .attr("class", "circle")
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .attr('r',1)
+      .attr("fill", function(d) {
+        return color_scale(d['properties']['Value']);
+      })
+      //.on("mouseover",showTooltipcoord)
+      //.on("mousemove",moveTooltipcoord)
+      //.on("mouseout",hideTooltipcoord)
+      //.on("click",clickedcoord);
+      $(".loading").css("opacity","0");
+  });
+
+}
+
+
+$("#sel1").change(function(event) {
+
+  cli_variable = $(this).val();
+
+  $(".loading").css("opacity","1");
+  svg.selectAll(".points circle").remove();
+
+  var updated_datafile = "./data/"+cli_variable+"/"+year+".geojson";
+
+  d3.json(updated_datafile,function(error,geodata) {
+    if (error) return console.log(error); //unknown error, check the console
+
+    //Create a path for each map feature in the data
+    coord_details.selectAll("circle")
+      .data(geodata.features)
+      .enter()
+      .append("circle")
+      .attr("class", "circle")
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .attr('r',1)
+      .attr("fill", function(d) {
+        return color_scale(d['properties']['Value']);
+      })
+      //.on("mouseover",showTooltipcoord)
+      //.on("mousemove",moveTooltipcoord)
+      //.on("mouseout",hideTooltipcoord)
+      //.on("click",clickedcoord);
+      $(".loading").css("opacity","0");
+  });
+
+});
+
+
