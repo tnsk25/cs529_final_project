@@ -1,5 +1,14 @@
 body {
   font: 12px sans-serif;
+  background: #f8f8f8 !important;
+}
+svg
+{
+  border:1px solid #333333;
+}
+.title
+{
+  text-align: center;
 }
 path {
   stroke-width: 1px;
@@ -118,4 +127,14 @@ div.tooltip {
   transform: translate(-50%, -50%);
   z-index: 100000;
 }
-
+#slider
+{
+  height: 25px;
+}
+.ui-slider-handle
+{
+  height: 30px !important;
+  width: 20px !important;
+  cursor: pointer !important;
+  background: #3899EC !important;
+}

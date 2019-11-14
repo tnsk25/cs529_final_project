@@ -1,5 +1,10 @@
-var color_scale = d3.scale.linear().domain([-50,50]).range(["red","blue"]);
+var color_scale_temp = d3.scale.quantize().domain([ 30, -30 ]).range(colorbrewer.RdYlBu[11]);
+var color_scale_pre = d3.scale.quantize().domain([ 0, 400 ]).range(colorbrewer.YlGnBu[9]);
+var colorLegend;
+
 var cli_variable="tmp",year=1901;
+
+var output = document.getElementById("demo");
 //Map dimensions (in pixels)
 var width = 1200,
     height = 800;
@@ -31,9 +36,25 @@ var zoom = d3.behavior.zoom()
 
 svg.call(zoom);
 
+
 //Create a tooltip, hidden at the start
 var tooltip = d3.select("body").append("div").attr("class","tooltip");
 
+//Heat map legend
+colorLegend = d3.legend.color()
+    .labelFormat(d3.format(".0f"))
+    .scale(color_scale_temp)
+    .shapePadding(5)
+    .shapeWidth(25)
+    .shapeHeight(15)
+    .labelOffset(12);
+
+svg.append("g")
+  .attr("transform", "translate(1100, 600)")
+  .attr("class","temp-legend")
+  .call(colorLegend);
+
+//load the country shape file
 d3.json("./data/countries.geojson",function(error,geodata) {
   if (error) return console.log(error); //unknown error, check the console
 
@@ -50,11 +71,10 @@ d3.json("./data/countries.geojson",function(error,geodata) {
 
 });
 
-
 var coord_details = svg.append( "g" ).attr("class","points");
-
 var datafile = "./data/"+cli_variable+"/"+year+".geojson";
 
+//load the coordinates
 d3.json(datafile,function(error,geodata) {
   if (error) return console.log(error); //unknown error, check the console
 
@@ -67,7 +87,7 @@ d3.json(datafile,function(error,geodata) {
     .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
     .attr('r',1)
     .attr("fill", function(d) {
-      return color_scale(d['properties']['Value']);
+      return color_scale_temp(d['properties']['Value']);
     })
     //.on("mouseover",showTooltipcoord)
     //.on("mousemove",moveTooltipcoord)
@@ -75,6 +95,7 @@ d3.json(datafile,function(error,geodata) {
     //.on("click",clickedcoord);
     $(".loading").css("opacity","0");
 });
+
 
 // Add optional onClick events for features here
 // d.properties contains the attributes (e.g. d.properties.name, d.properties.population)
@@ -139,44 +160,91 @@ function stopPropagation(evt) {
   }
 }
 
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value; // Display the default slider value
+//Year slider events
+$( "#slider" ).slider({
+      range:"min",
+      min: 1901,
+      max: 2018,
+      value:1901,
+      step:1,
+      create: function() {
+        output.innerHTML = $( this ).slider( "value" );
+      },
+      slide: function( event, ui ) {
+        output.innerHTML = ui.value;
+        year = ui.value;
+      },
+      stop: function( event, ui ) {
 
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-  output.innerHTML = this.value;
-  year = this.value;
+        $(".loading").css("opacity","1");
+        svg.selectAll(".points circle").remove();
 
-  $(".loading").css("opacity","1");
-  svg.selectAll(".points circle").remove();
+        if(cli_variable=="tmp")
+        {
+          svg.selectAll(".pre-legend").remove();
+          colorLegend = d3.legend.color()
+          .labelFormat(d3.format(".0f"))
+          .scale(color_scale_temp)
+          .shapePadding(5)
+          .shapeWidth(25)
+          .shapeHeight(15)
+          .labelOffset(12);
 
-  var updated_datafile = "./data/"+cli_variable+"/"+year+".geojson";
+          svg.append("g")
+            .attr("transform", "translate(1100, 600)")
+            .attr("class","temp-legend")
+            .call(colorLegend);
 
-  d3.json(updated_datafile,function(error,geodata) {
-    if (error) return console.log(error); //unknown error, check the console
+        }  
+        else
+        {
+          svg.selectAll(".temp-legend").remove();
+          colorLegend = d3.legend.color()
+          .labelFormat(d3.format(".0f"))
+          .scale(color_scale_pre)
+          .shapePadding(5)
+          .shapeWidth(25)
+          .shapeHeight(15)
+          .labelOffset(12);
 
-    //Create a path for each map feature in the data
-    coord_details.selectAll("circle")
-      .data(geodata.features)
-      .enter()
-      .append("circle")
-      .attr("class", "circle")
-      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr('r',1)
-      .attr("fill", function(d) {
-        return color_scale(d['properties']['Value']);
-      })
-      //.on("mouseover",showTooltipcoord)
-      //.on("mousemove",moveTooltipcoord)
-      //.on("mouseout",hideTooltipcoord)
-      //.on("click",clickedcoord);
-      $(".loading").css("opacity","0");
-  });
+          svg.append("g")
+            .attr("transform", "translate(1100, 600)")
+            .attr("class","pre-legend")
+            .call(colorLegend);
 
-}
+        } 
 
 
+        var updated_datafile = "./data/"+cli_variable+"/"+year+".geojson";
+
+        d3.json(updated_datafile,function(error,geodata) {
+          if (error) return console.log(error); //unknown error, check the console
+
+          //Create a path for each map feature in the data
+          coord_details.selectAll("circle")
+            .data(geodata.features)
+            .enter()
+            .append("circle")
+            .attr("class", "circle")
+            .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+            .attr('r',1)
+            .attr("fill", function(d) {
+              if(cli_variable=="tmp")
+                return color_scale_temp(d['properties']['Value']);
+              else
+                return color_scale_pre(d['properties']['Value']);
+            })
+            //.on("mouseover",showTooltipcoord)
+            //.on("mousemove",moveTooltipcoord)
+            //.on("mouseout",hideTooltipcoord)
+            //.on("click",clickedcoord);
+            $(".loading").css("opacity","0");
+        });
+        
+    }
+});
+
+//Climate variable on change event
 $("#sel1").change(function(event) {
 
   cli_variable = $(this).val();
@@ -184,6 +252,41 @@ $("#sel1").change(function(event) {
   $(".loading").css("opacity","1");
   svg.selectAll(".points circle").remove();
 
+  if(cli_variable=="tmp")
+  {
+    svg.selectAll(".pre-legend").remove();
+    colorLegend = d3.legend.color()
+    .labelFormat(d3.format(".0f"))
+    .scale(color_scale_temp)
+    .shapePadding(5)
+    .shapeWidth(25)
+    .shapeHeight(15)
+    .labelOffset(12);
+
+    svg.append("g")
+      .attr("transform", "translate(1100, 600)")
+      .attr("class","temp-legend")
+      .call(colorLegend);
+
+  }  
+  else
+  {
+    svg.selectAll(".temp-legend").remove();
+    colorLegend = d3.legend.color()
+    .labelFormat(d3.format(".0f"))
+    .scale(color_scale_pre)
+    .shapePadding(5)
+    .shapeWidth(25)
+    .shapeHeight(15)
+    .labelOffset(12);
+
+    svg.append("g")
+      .attr("transform", "translate(1100, 600)")
+      .attr("class","pre-legend")
+      .call(colorLegend);
+
+  }  
+
   var updated_datafile = "./data/"+cli_variable+"/"+year+".geojson";
 
   d3.json(updated_datafile,function(error,geodata) {
@@ -198,7 +301,10 @@ $("#sel1").change(function(event) {
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
       .attr('r',1)
       .attr("fill", function(d) {
-        return color_scale(d['properties']['Value']);
+        if(cli_variable=="tmp")
+          return color_scale_temp(d['properties']['Value']);
+        else
+          return color_scale_pre(d['properties']['Value']);
       })
       //.on("mouseover",showTooltipcoord)
       //.on("mousemove",moveTooltipcoord)
