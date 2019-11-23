@@ -135,6 +135,7 @@ function hideTooltip() {
 }
 
 let leftSideBarShown = true;
+let rightSideBarShown = false;
 
 function toggleLeftSideBar(e) {
   if (e) {
@@ -150,6 +151,38 @@ function toggleLeftSideBar(e) {
     left.removeEventListener("click", toggleLeftSideBar);
   }
   leftSideBarShown = !leftSideBarShown;
+}
+
+function CreateTimeSeries(coords) {
+  let lat = $("#lat").val();
+  let long = $("#long").val();
+  initTimeSeries(lat, long, cli_variable);
+  if (!rightSideBarShown) {
+    toggleRightSideBar();
+  }
+}
+
+function initTimeSeries(lat, long, cli_variable) {
+  d3.json('./data/sample.json',function(error,data) {
+    if (error) return console.log(error); //unknown error, check the console
+    console.log(data);
+  });
+}
+
+function toggleRightSideBar(e) {
+  if (e) {
+    stopPropagation(e);
+    e.preventDefault();
+  }
+  const rightSideBar = document.getElementById('right');
+  if (rightSideBarShown) {
+    rightSideBar.classList.add("minimized");
+    rightSideBar.addEventListener("click", toggleRightSideBar);
+  } else {
+    rightSideBar.classList.remove("minimized");
+    rightSideBar.removeEventListener("click", toggleRightSideBar);
+  }
+  rightSideBarShown = !rightSideBarShown;
 }
 
 function stopPropagation(evt) {

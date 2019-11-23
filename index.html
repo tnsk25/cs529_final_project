@@ -26,7 +26,23 @@
             </select>
           </div>
         </form>
+        <h1>Time Series Coordinates</h1>
+        <form action="javascript:;" onsubmit="CreateTimeSeries(this)">
+          <div class="form-group">
+            <label>Latitude:</label>
+            <input type="text" class="form-control" id="lat">
+          </div>
+          <div class="form-group">
+            <label>Longitude:</label>
+            <input type="text" class="form-control" id="long">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
       </div>
+    </div>
+    <div class="right-side-bar card minimized" id="right">
+      <button onclick="toggleRightSideBar(event)" class="close"></button>
+      <div id="chart"></div>
     </div>
     <div class="map-div"></div>
     <div class="loading">

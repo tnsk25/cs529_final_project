@@ -64,7 +64,7 @@ div.tooltip {
 .left-side-bar.minimized .card {
   background-color: #3899EC;
 }
-.left-side-bar .close {
+.left-side-bar .close, .right-side-bar .close {
   position: absolute;
   right: 4px;
   top: 4px;
@@ -92,6 +92,52 @@ div.tooltip {
   border: none !important;
   border-radius: 8px;
   box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.right-side-bar {
+  z-index: 10;
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: auto;
+  margin: 12px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  transition: 250ms ease-in-out;
+  transform: translate3d(0, 0, 0);
+}
+
+.right-side-bar.minimized {
+  transform: translate3d(98%, 0, 0);
+  cursor: pointer;
+  min-width: 20%;
+  min-height: 25%;
+  background-color: #3899EC;
+}
+
+.right-side-bar.minimized:hover {
+  transform: translate3d(96%, 0, 0) scale3d(1.1, 1.1, 1.0);
+  cursor: pointer;
+  min-width: 20%;
+  min-height: 25%;
+}
+
+.right-side-bar .time-series {
+  margin-top: 40px;
+}
+
+.right-side-bar.minimized .close {
+  display: none;
+}
+
+.right-side-bar svg {
+  height: auto;
+  width: 100%;
+}
+
+.right-side-bar svg rect {
+  cursor: pointer;
 }
 
 .slidecontainer {
