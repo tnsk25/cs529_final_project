@@ -156,19 +156,41 @@ function toggleLeftSideBar(e) {
 function CreateTimeSeries(coords) {
   let lat = $("#lat").val();
   let long = $("#long").val();
-  initTimeSeries(lat, long, cli_variable);
+  let startYear = 1906;
+  let endYear = 1916;
+  initTimeSeries(lat, long, cli_variable, startYear, endYear);
   if (!rightSideBarShown) {
     toggleRightSideBar();
   }
 }
 
 var dataset = [];
-function initTimeSeries(lat, long, cli_variable) {
+function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
   var optwidth = 600;
   var optheight = 400;
 
-  d3.json('./data/samplecopy.json',function(error,data) {
-    if (error) return console.log(error); //unknown error, check the console
+  var params = {
+    'year_from' : startYear,
+    'year_to': endYear,
+    'lat': lat,
+    'long': long,
+    'climate_variable': cli_variable
+  };
+
+  $.ajax({
+          url: 'hhttp://localhost:3000/api/getData',
+          dataType: 'json',
+          type: 'get',
+    crossDomain: true,
+          data: params,
+          success: function(data){
+              console.log(data);
+          },
+          error: function(){
+              alert("Error while fetching data");
+          }
+      });
+
     const entries = Object.entries(data);
     entries.forEach(function (d, i) {
       d[1].forEach(function (f, i) {
@@ -177,14 +199,13 @@ function initTimeSeries(lat, long, cli_variable) {
         var obj = { date: formatDate, values: f};
         dataset.push(obj);
       })
-    })
+    });
     // format month as a date
     dataset.forEach(function(d) {
         d.date = d3.time.format("%Y-%m").parse(d.date);
     });
     console.log(dataset);
     drawChart(dataset);
-  });
 }
 
 function drawChart(data) {
