@@ -93,6 +93,7 @@ function hideTooltip() {
 }
 
 let leftSideBarShown = true;
+let rightSideBarShown = false;
 
 function toggleLeftSideBar(e) {
   if (e) {
@@ -108,6 +109,148 @@ function toggleLeftSideBar(e) {
     left.removeEventListener("click", toggleLeftSideBar);
   }
   leftSideBarShown = !leftSideBarShown;
+}
+
+function CreateTimeSeries(coords) {
+  let lat = $("#lat").val();
+  let long = $("#long").val();
+  let startYear = 1901;
+  let endYear = 1930;
+  initTimeSeries(lat, long, cli_variable, startYear, endYear);
+  if (!rightSideBarShown) {
+    toggleRightSideBar();
+  }
+}
+
+var dataset = [];
+function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
+  var optwidth = 600;
+  var optheight = 400;
+
+  var params = {
+    'year_from' : startYear,
+    'year_to': endYear,
+    'lat': lat,
+    'long': long,
+    'climate_variable': cli_variable
+  };
+
+  $.ajax({
+          url: 'http://localhost:3000/api/getData',
+          dataType: 'json',
+          type: 'get',
+          crossDomain: true,
+          data: params,
+          success: function(data){
+              console.log(data);
+
+              $.each(data, function(sel_year, item) {
+                  // console.log(sel_year);
+                  $.each(item, function(j,value) {
+                    
+                    var formatDate = sel_year + "-"+ (j+1);
+                    var obj = { date: formatDate, values: value};
+                    dataset.push(obj);
+                  });
+              });
+                  // format month as a date
+                  dataset.forEach(function(d) {
+                      d.date = d3.time.format("%Y-%m").parse(d.date);
+                  });
+                  console.log(dataset);
+                  drawChart(dataset);
+            },
+            error: function(){
+                alert("Error while fetching data");
+                  
+            }
+});
+
+}  
+
+function drawChart(data) {
+  console.log(data);
+  var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+  var parseDate = d3.time.format("%Y").parse;
+
+  var x = d3.time.scale()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var color = d3.scale.category10();
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var line = d3.svg.line()
+      .interpolate("basis")
+      .x(function(d) { 
+        console.log(d);
+        return x(d.date); 
+      })
+      .y(function(d) { 
+        console.log(d);
+        return y(d.values); 
+      });
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+
+  y.domain([
+    d3.min(data, function(v) { return v.values; }),
+    d3.max(data, function(v) { return v.values;})
+  ]);
+  console.log(y);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+}
+
+function toggleRightSideBar(e) {
+  if (e) {
+    stopPropagation(e);
+    e.preventDefault();
+  }
+  const rightSideBar = document.getElementById('right');
+  if (rightSideBarShown) {
+    rightSideBar.classList.add("minimized");
+    rightSideBar.addEventListener("click", toggleRightSideBar);
+  } else {
+    rightSideBar.classList.remove("minimized");
+    rightSideBar.removeEventListener("click", toggleRightSideBar);
+  }
+  rightSideBarShown = !rightSideBarShown;
 }
 
 function stopPropagation(evt) {
