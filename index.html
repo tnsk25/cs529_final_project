@@ -19,11 +19,23 @@
         <h1>Variables</h1>
         <form>
           <div class="form-group">
-            <label for="sel1">Climatic Variables (select one):</label>
-            <select class="form-control" id="sel1">
+            <label for="variable">Climatic Variables (select one):</label>
+            <select class="form-control" id="variable">
               <option id="temp" value="tmp">Temperature (&#176;C)</option>
+              <option id="near-temp-min" value="tmn">Surface Tmp Min (&#176;C)</option>
+              <option id="near-temp-max" value="tmx">Surface Tmp Max (&#176;C)</option>
+              <option id="diurnal" value="dtr">Diurnal Tmp range (&#176;C)</option>
               <option id="precip" value="pre">Precipitation (mm)</option>
+              <option id="pet" value="pet">Potential Evapotranspiration (mm/day)</option>
+              <option id="frs" value="frs">Ground Frost Frequency (days)</option>
+              <option id="cld" value="cld">Cloud Cover (%)</option>
+              <option id="wet" value="wet">Wet Day Frequency (days)</option>
+              <option id="vap" value="vap">Vapour Pressure (hPa)</option>
             </select>
+
+            <label for="year">Select year:</label>
+            <select class="form-control" id="year"></select>
+
           </div>
         </form>
       </div>
@@ -31,10 +43,6 @@
     <div class="map-div"></div>
     <div class="loading">
       <img src="./src/images/loading.gif" alt="Loading">
-    </div>
-    <div class="slidecontainer">
-      <h3>Year: <span id="demo"></span></h1>
-        <div id="slider"></div>
     </div>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
