@@ -19,15 +19,12 @@ client.connect("mongodb://localhost:27017/CRU", function(err, db) {
   else
   {
    console.log('Connected to DB!');
-   // var collection_name = concat('"','Temp_Monthly','"') 
    dbo = db.db("CRU");
 	}	
 
 });
 
-
-
-  app.get('/api/getData', function(req, res) {
+app.get('/api/getData', function(req, res) {
 
   	var Year_Start = req.body.year_from;
   	var Year_End = req.body.year_to;
@@ -37,7 +34,7 @@ client.connect("mongodb://localhost:27017/CRU", function(err, db) {
 
   	// var collection_name = concat('"',climate_variable,'"') 
 
-    dbo.collection(climate_var).findOne({'Lat': loc_Lat, 'Long': loc_long}, function(err, result){
+    dbo.collection(climate_var).findOne({'Lat': Loc_Lat, 'Long': Loc_Long}, function(err, result){
    	
    	for (i = Year_Start; i<= Year_End; i++)
    	{
@@ -48,9 +45,7 @@ client.connect("mongodb://localhost:27017/CRU", function(err, db) {
    	
    	})
 
-  });
-
-
+});
 
 // // start the server
 app.listen(port);
