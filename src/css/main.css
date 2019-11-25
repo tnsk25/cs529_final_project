@@ -10,13 +10,13 @@ svg
 {
   text-align: center;
 }
-path {
+.map-div path {
   stroke-width: 1px;
   stroke: #333333;
   fill: #d3d3d3;
   cursor: pointer;
 }
-path:hover, path.highlighted,text:hover, text.highlighted {
+.map-div path:hover, .map-div path.highlighted, .map-div text:hover, .map-div text.highlighted {
   fill: #969696;
 }
 
@@ -183,4 +183,17 @@ div.tooltip {
   width: 20px !important;
   cursor: pointer !important;
   background: #3899EC !important;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }

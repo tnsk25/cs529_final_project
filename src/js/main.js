@@ -162,11 +162,91 @@ function CreateTimeSeries(coords) {
   }
 }
 
+var dataset = [];
 function initTimeSeries(lat, long, cli_variable) {
-  d3.json('./data/sample.json',function(error,data) {
+  var optwidth = 600;
+  var optheight = 400;
+
+  d3.json('./data/samplecopy.json',function(error,data) {
     if (error) return console.log(error); //unknown error, check the console
-    console.log(data);
+    const entries = Object.entries(data);
+    entries.forEach(function (d, i) {
+      d[1].forEach(function (f, i) {
+        i++;
+        var formatDate = d[0] + "-"+ i;
+        var obj = { date: formatDate, values: f};
+        dataset.push(obj);
+      })
+    })
+    // format month as a date
+    dataset.forEach(function(d) {
+        d.date = d3.time.format("%Y-%m").parse(d.date);
+    });
+    console.log(dataset);
+    drawChart(dataset);
   });
+}
+
+function drawChart(data) {
+  var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+  var parseDate = d3.time.format("%Y").parse;
+
+  var x = d3.time.scale()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var color = d3.scale.category10();
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var line = d3.svg.line()
+      .interpolate("basis")
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.values); });
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+
+  y.domain([
+    d3.min(data, function(v) { return v.values; }),
+    d3.max(data, function(v) { return v.values;})
+  ]);
+  console.log(y);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
 }
 
 function toggleRightSideBar(e) {
