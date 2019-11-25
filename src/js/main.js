@@ -156,8 +156,8 @@ function toggleLeftSideBar(e) {
 function CreateTimeSeries(coords) {
   let lat = $("#lat").val();
   let long = $("#long").val();
-  let startYear = 1906;
-  let endYear = 1916;
+  let startYear = 1901;
+  let endYear = 1930;
   initTimeSeries(lat, long, cli_variable, startYear, endYear);
   if (!rightSideBarShown) {
     toggleRightSideBar();
@@ -178,37 +178,40 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
   };
 
   $.ajax({
-          url: 'hhttp://localhost:3000/api/getData',
+          url: 'http://localhost:3000/api/getData',
           dataType: 'json',
           type: 'get',
-    crossDomain: true,
+          crossDomain: true,
           data: params,
           success: function(data){
               console.log(data);
-          },
-          error: function(){
-              alert("Error while fetching data");
-          }
-      });
 
-    const entries = Object.entries(data);
-    entries.forEach(function (d, i) {
-      d[1].forEach(function (f, i) {
-        i++;
-        var formatDate = d[0] + "-"+ i;
-        var obj = { date: formatDate, values: f};
-        dataset.push(obj);
-      })
-    });
-    // format month as a date
-    dataset.forEach(function(d) {
-        d.date = d3.time.format("%Y-%m").parse(d.date);
-    });
-    console.log(dataset);
-    drawChart(dataset);
-}
+              $.each(data, function(sel_year, item) {
+                  // console.log(sel_year);
+                  $.each(item, function(j,value) {
+                    
+                    var formatDate = sel_year + "-"+ (j+1);
+                    var obj = { date: formatDate, values: value};
+                    dataset.push(obj);
+                  });
+              });
+                  // format month as a date
+                  dataset.forEach(function(d) {
+                      d.date = d3.time.format("%Y-%m").parse(d.date);
+                  });
+                  console.log(dataset);
+                  drawChart(dataset);
+            },
+            error: function(){
+                alert("Error while fetching data");
+                  
+            }
+});
+
+}  
 
 function drawChart(data) {
+  console.log(data);
   var margin = {top: 20, right: 80, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -233,8 +236,14 @@ function drawChart(data) {
 
   var line = d3.svg.line()
       .interpolate("basis")
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.values); });
+      .x(function(d) { 
+        console.log(d);
+        return x(d.date); 
+      })
+      .y(function(d) { 
+        console.log(d);
+        return y(d.values); 
+      });
 
   var svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
