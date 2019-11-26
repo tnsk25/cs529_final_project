@@ -1,15 +1,21 @@
+#File converts raw netCDF data files to csv files. The generated csv file contains the yearly average value of the chosen climate variable of all lat/long values available.
+#Creates 118 files from year 1901 to 2018. Place this file in same folder which has the climate variable netCDF and execute.
+
 rm(list = ls())
 library(raster)
 library(reshape2)
 
+#Change the required file name below
 nc.brick_file =brick("cru_ts4.03.1901.2018.pre.dat.nc")
 
 dim(nc.brick_file)
 
+#Create month-year sequence for column names
 seq_month_year = format(seq(as.Date(paste0("190101","01"), "%Y%m%d"), 
                as.Date(paste0("201812","12"), "%Y%m%d"),by="month"), 
            "%Y-%m")
 
+#Create year sequence for file names
 seq_year = format(seq(as.Date(paste0("190101","01"), "%Y%m%d"), 
                as.Date(paste0("201812","12"), "%Y%m%d"),by="year"), 
            "%Y")
@@ -26,10 +32,13 @@ for (i in 1:1416)
   	{
   	  df_eachyear = data.frame(matrix(ncol=0,nrow=0))
   	  df_eachyear <- rbind(df_eachyear, nc.temp_df)
-  	}else if (i%%12 == 0)
+  	}
+    #Writes csv once 12 monthly is completed
+    else if (i%%12 == 0) 
   	{
   		df_eachyear<- rbind(df_eachyear, nc.temp_df)
-		  df_eachyear = aggregate(df_eachyear$value, by=list(df_eachyear$Long, df_eachyear$Lat), data = df_eachyear, mean)
+      #Computes yearly mean
+		  df_eachyear = aggregate(df_eachyear$value, by=list(df_eachyear$Long, df_eachyear$Lat), data = df_eachyear, mean) 
 		  colnames(df_eachyear)<-c("Long","Lat","Value")
 		  file_name = paste0(seq_year[year_counter],".csv")
 		  write.csv(df_eachyear, file_name, row.names = FALSE)
