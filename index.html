@@ -16,7 +16,7 @@
     <div class="left-side-bar" id="left">
       <button onclick="toggleLeftSideBar(event)" class="close"></button>
       <div class="card">
-        <h1>Variables</h1>
+        <h3>Heat Map Menu</h1>
         <form>
           <div class="form-group">
             <label for="variable">Climatic Variables (select one):</label>
@@ -38,15 +38,17 @@
 
           </div>
         </form>
-        <h1>Time Series Coordinates</h1>
+        <h3>Time Series Menu</h1>
         <form action="javascript:;" onsubmit="CreateTimeSeries(this)">
           <div class="form-group">
             <label>Latitude:</label>
             <input type="text" class="form-control" id="lat">
-          </div>
-          <div class="form-group">
             <label>Longitude:</label>
             <input type="text" class="form-control" id="long">
+            <label for="year">From year:</label>
+            <select class="form-control" id="from_year"></select>
+            <label for="year">To year:</label>
+            <select class="form-control" id="to_year"></select>
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
         </form>
