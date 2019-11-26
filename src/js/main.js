@@ -47,7 +47,6 @@ var x2;
 var y2;
 var xAxis_context;
 var line;
-var area;
 var area_context;
 var line_context;
 var brush;
@@ -253,11 +252,6 @@ function drawBrushedChart(dataset) {
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.values); });
 
-  area = d3.svg.area()
-    .x(function(d) { return x(d.date); })
-    .y0((height))
-    .y1(function(d) { return y(d.values); });
-
   area_context = d3.svg.area()
       .x(function(d) { return x2(d.date); })
       .y0((height_context))
@@ -367,11 +361,6 @@ function drawBrushedChart(dataset) {
       .call(yAxis)
       .attr("transform", "translate(" + (width) + ", 0)");
 
-  focus.append("path")
-      .datum(dataset)
-      .attr("class", "area")
-      .attr("d", area);
-
   focus.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -480,7 +469,6 @@ function customTickFunction(t0, t1, dt)  {
 function brushed() {
 
   x.domain(brush.empty() ? x2.domain() : brush.extent());
-  focus.select(".area").attr("d", area);
   focus.select(".line").attr("d", line);
   focus.select(".x.axis").call(xAxis);
   // Reset zoom scale's domain
@@ -492,7 +480,6 @@ function brushed() {
 
 function draw() {
   setYdomain();
-  focus.select(".area").attr("d", area);
   focus.select(".line").attr("d", line);
   focus.select(".x.axis").call(xAxis);
   //focus.select(".y.axis").call(yAxis);
