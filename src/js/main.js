@@ -114,8 +114,8 @@ function toggleLeftSideBar(e) {
 function CreateTimeSeries(coords) {
   let lat = $("#lat").val();
   let long = $("#long").val();
-  let startYear = 1901;
-  let endYear = 1930;
+  let startYear = $("#from_year").val();
+  let endYear = $("#to_year").val();
   initTimeSeries(lat, long, cli_variable, startYear, endYear);
   if (!rightSideBarShown) {
     toggleRightSideBar();
@@ -324,6 +324,8 @@ $(document).ready(function() {
   for(var i =1901; i<=2018; i++)
   {
     $("#year").append("<option value='"+i+"'>"+i+"</option>");
+    $("#from_year").append("<option value='"+i+"'>"+i+"</option>");
+    $("#to_year").append("<option value='"+i+"'>"+i+"</option>");
   }
 
   
