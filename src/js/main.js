@@ -186,8 +186,8 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
 
 function drawBrushedChart(dataset) {
   console.log(dataset);
-  var optwidth        = 960;
-  var optheight       = 500;
+  var optwidth        = 600;
+  var optheight       = 370;
 
   var margin  = {top: 20, right: 30, bottom: 100, left: 20},
       width = optwidth - margin.left - margin.right,
