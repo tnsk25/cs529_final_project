@@ -69,19 +69,9 @@ d3.json("./data/countries.geojson",function(error,geodata) {
     .data(geodata.features)
     .enter()
     .append("path")
-    .attr("d",path)
-    .on("mouseover",showTooltip)
-    .on("mousemove",moveTooltip)
-    .on("mouseout",hideTooltip)
-    .on("click",clicked);
-
+    .attr("d",path);
 });
 
-// Add optional onClick events for features here
-// d.properties contains the attributes (e.g. d.properties.name, d.properties.population)
-function clicked(d,i) {
-
-}
 
 //Update map on zoom/pan
 function zoomed() {
@@ -90,25 +80,6 @@ function zoomed() {
 
   coord_details.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")")
           .selectAll("path").style("stroke-width", 1 / zoom.scale() + "px" );
-}
-
-//Create a tooltip, hidden at the start
-function showTooltip(d) {
-  moveTooltip();
-
-  tooltip.style("display","block")
-      .text(d.properties.name);
-}
-
-//Move the tooltip to track the mouse
-function moveTooltip() {
-  tooltip.style("top",(d3.event.pageY+tooltipOffset.y)+"px")
-      .style("left",(d3.event.pageX+tooltipOffset.x)+"px");
-}
-
-//Create a tooltip, hidden at the start
-function hideTooltip() {
-  tooltip.style("display","none");
 }
 
 function toggleLeftSideBar(e) {
@@ -127,7 +98,7 @@ function toggleLeftSideBar(e) {
   leftSideBarShown = !leftSideBarShown;
 }
 
-function CreateTimeSeries(coords) {
+function CreateTimeSeries() {
   let lat = $("#lat").val();
   let long = $("#long").val();
   let startYear = $("#from_year").val();
@@ -139,6 +110,9 @@ function CreateTimeSeries(coords) {
 }
 
 function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
+
+  dataset = [];
+
   var optwidth = 600;
   var optheight = 400;
 
@@ -185,7 +159,9 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
 }
 
 function drawBrushedChart(dataset) {
-  console.log(dataset);
+  
+  $("#metric-modal svg").remove();
+
   var optwidth        = 600;
   var optheight       = 370;
 
@@ -743,9 +719,41 @@ function loadCoordinates(cli_variable,year)
       .attr("fill", function(d) {
         return color_scale(d['properties']['Value']);
       })
+      .on("mouseover",showTooltip)
+      .on("mousemove",moveTooltip)
+      .on("mouseout",hideTooltip)
+      .on("click",clicked);
 
       $(".loading").css("opacity","0");
   });
+
+}
+
+
+//Create a tooltip, hidden at the start
+function showTooltip(d) {
+  moveTooltip();
+  tooltip.style("display","block")
+      .html("Latitude: "+d['geometry']['coordinates'][1]+"<br>Longitude: "+d['geometry']['coordinates'][0]);
+}
+
+//Move the tooltip to track the mouse
+function moveTooltip() {
+  tooltip.style("top",(d3.event.pageY+tooltipOffset.y)+"px")
+      .style("left",(d3.event.pageX+tooltipOffset.x)+"px");
+}
+
+//Create a tooltip, hidden at the start
+function hideTooltip() {
+  tooltip.style("display","none");
+}
+
+// Add optional onClick events for features here
+// d.properties contains the attributes (e.g. d.properties.name, d.properties.population)
+function clicked(d,i) {
+
+  $("#lat").val(d['geometry']['coordinates'][1]);
+  $("#long").val(d['geometry']['coordinates'][0]);
 
 }
   
@@ -765,6 +773,12 @@ $(document).ready(function() {
 $("#variable").change(function(event) {
   cli_variable = $(this).val();
   loadCoordinates(cli_variable,year);
+
+  if(($("#lat").val()!="") && ($("#long").val()!=""))
+  {
+    CreateTimeSeries();
+  }
+
 });
 
 //Heatmap Year change event

@@ -16,8 +16,13 @@ svg
   fill: #d3d3d3;
   cursor: pointer;
 }
-.map-div path:hover, .map-div path.highlighted, .map-div text:hover, .map-div text.highlighted {
+/*.map-div path:hover, .map-div path.highlighted, .map-div text:hover, .map-div text.highlighted {
   fill: #969696;
+}*/
+
+circle
+{
+  cursor: pointer;
 }
 
 div.tooltip {
@@ -27,6 +32,7 @@ div.tooltip {
   color: black;
   font-weight: bold;
   padding: 4px 8px;
+  opacity: 1 !important;
   display: none;
 }
 .map-div {
