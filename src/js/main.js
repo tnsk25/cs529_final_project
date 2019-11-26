@@ -563,13 +563,14 @@ function setYdomain(){
   countSubset.push(yleft);
   countSubset.push(yright);
   var ymax_new = d3.max(countSubset);
+  var ymin_new = d3.min(countSubset);
 
   if(ymax_new == 0){
       ymax_new = dataYrange[1];
   }
 
   // reset and redraw the yaxis
-  y.domain([0, ymax_new*1.05]);
+  y.domain([ymin_new*1.05, ymax_new*1.05]);
   focus.select(".y.axis").call(yAxis);
 
 };
