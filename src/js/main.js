@@ -318,16 +318,7 @@ function drawBrushedChart(dataset) {
 
   var button_width = 40;
   var button_height = 14;
-
-  // don't show year button if < 1 year of data
-  dateRange  = dataXrange[1] - dataXrange[0],
-      ms_in_year = 31540000000;
-
-  if (dateRange < ms_in_year)   {
-      var button_data =["month","data"];
-  } else {
-      var button_data =["year","month","data"];
-  };
+  var button_data =["data"];
 
   button = display_range_group.selectAll("g")
       .data(button_data)
@@ -585,33 +576,17 @@ function setYdomain(){
 
 function scaleDate(d,i) {
 // action for buttons that scale focus to certain time interval
-
   var b = brush.extent(),
       interval_ms,
       brush_end_new,
       brush_start_new;
 
-  if      (d == "year")   { interval_ms = 31536000000}
-  else if (d == "month")  { interval_ms = 2592000000 };
-
-  if ( d == "year" | d == "month" )  {
-
-      if((maxdate.getTime() - b[1].getTime()) < interval_ms){
-      // if brush is too far to the right that increasing the right-hand brush boundary would make the chart go out of bounds....
-          brush_start_new = new Date(maxdate.getTime() - interval_ms); // ...then decrease the left-hand brush boundary...
-          brush_end_new = maxdate; //...and set the right-hand brush boundary to the maxiumum limit.
-      } else {
-      // otherwise, increase the right-hand brush boundary.
-          brush_start_new = b[0];
-          brush_end_new = new Date(b[0].getTime() + interval_ms);
-      };
-
-  } else if ( d == "data")  {
-      brush_start_new = dataXrange[0];
-      brush_end_new = dataXrange[1]
+  if ( d == "data" )  {
+    brush_start_new = dataXrange[0];
+    brush_end_new = dataXrange[1]
   } else {
-      brush_start_new = b[0];
-      brush_end_new = b[1];
+    brush_start_new = b[0];
+    brush_end_new = b[1];
   };
 
   brush.extent([brush_start_new, brush_end_new]);
