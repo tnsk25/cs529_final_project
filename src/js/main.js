@@ -1,29 +1,22 @@
 var cli_variable="tmp",year=1901;
-
 var output = document.getElementById("demo");
 //Map dimensions (in pixels)
-var width = 1200,
-    height = 800;
-
+var width = 1200, height = 800;
 //Map projection
 var projection = d3.geo.robinson()
     .scale(183.56015491730435)
     .center([-0.0018057527730361458,11.258678472759552]) //projection center
     .translate([width/2,height/2]) //translate to center the map in view
-
 //Generate paths based on projection
 var path = d3.geo.path()
     .projection(projection);
-
 //Create an SVG
 var svg = d3.select("body .map-div").append("svg")
     .attr("width", width)
     .attr("height", height);
-
 //Group for the map features
 var features = svg.append("g")
     .attr("class","features");
-
 //Create zoom/pan listener
 //Change [1,Infinity] to adjust the min/max zoom scale
 var zoom = d3.behavior.zoom()
@@ -31,10 +24,43 @@ var zoom = d3.behavior.zoom()
     .on("zoom",zoomed);
 
 svg.call(zoom);
-
-
 //Create a tooltip, hidden at the start
 var tooltip = d3.select("body").append("div").attr("class","tooltip");
+var coord_details = svg.append( "g" ).attr("class","points");
+//Position of the tooltip relative to the cursor
+var tooltipOffset = {x: 5, y: -25};
+var leftSideBarShown = true;
+var rightSideBarShown = false;
+//Time Series Variables
+var dataset = [];
+var dataXrange;
+var dataYrange;
+var mindate;
+var maxdate;
+var DateFormat;
+var dynamicDateFormat;
+var x;
+var y;
+var xAxis;
+var yAxis;
+var x2;
+var y2;
+var xAxis_context;
+var line;
+var area;
+var area_context;
+var line_context;
+var brush;
+var zoomTS;
+var vis;
+var context;
+var focus;
+var rect;
+var display_range_group;
+var expl_text;
+var dateRange;
+var button;
+var brushg;
 
 //load the country shape file
 d3.json("./data/countries.geojson",function(error,geodata) {
@@ -53,8 +79,6 @@ d3.json("./data/countries.geojson",function(error,geodata) {
 
 });
 
-var coord_details = svg.append( "g" ).attr("class","points");
-
 // Add optional onClick events for features here
 // d.properties contains the attributes (e.g. d.properties.name, d.properties.population)
 function clicked(d,i) {
@@ -69,9 +93,6 @@ function zoomed() {
   coord_details.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")")
           .selectAll("path").style("stroke-width", 1 / zoom.scale() + "px" );
 }
-
-//Position of the tooltip relative to the cursor
-var tooltipOffset = {x: 5, y: -25};
 
 //Create a tooltip, hidden at the start
 function showTooltip(d) {
@@ -91,9 +112,6 @@ function moveTooltip() {
 function hideTooltip() {
   tooltip.style("display","none");
 }
-
-let leftSideBarShown = true;
-let rightSideBarShown = false;
 
 function toggleLeftSideBar(e) {
   if (e) {
@@ -122,7 +140,6 @@ function CreateTimeSeries(coords) {
   }
 }
 
-var dataset = [];
 function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
   var optwidth = 600;
   var optheight = 400;
