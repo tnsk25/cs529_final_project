@@ -47,7 +47,6 @@ var x2;
 var y2;
 var xAxis_context;
 var line;
-var area_context;
 var line_context;
 var brush;
 var zoomTS;
@@ -252,11 +251,6 @@ function drawBrushedChart(dataset) {
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.values); });
 
-  area_context = d3.svg.area()
-      .x(function(d) { return x2(d.date); })
-      .y0((height_context))
-      .y1(function(d) { return y2(d.values); });
-
   line_context = d3.svg.line()
       .x(function(d) { return x2(d.date); })
       .y(function(d) { return y2(d.values); });
@@ -372,11 +366,6 @@ function drawBrushedChart(dataset) {
       .attr("d", line);
 
   /* === context chart === */
-
-  context.append("path")
-      .datum(dataset)
-      .attr("class", "area")
-      .attr("d", area_context);
 
   context.append("path")
       .datum(dataset)
