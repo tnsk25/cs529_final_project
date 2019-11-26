@@ -403,7 +403,7 @@ function drawBrushedChart(dataset) {
 
   vis.append("text")
       .attr("class", "y axis title")
-      .text("Monthly " + this.metricName)
+      .text($("#variable").find("option:selected").text())
       .attr("x", (-(height/2)))
       .attr("y", 0)
       .attr("dy", "1em")
