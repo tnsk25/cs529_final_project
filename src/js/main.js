@@ -1,4 +1,11 @@
 var cli_variable="tmp",year=1901;
+var lat = 43.25;
+var long = -88.25;
+var startYear = 1901;
+var endYear = 2018;
+var aggregation_Type="Annual";
+
+
 var output = document.getElementById("demo");
 //Map dimensions (in pixels)
 var width = 1000, height = 600;
@@ -60,6 +67,11 @@ var dateRange;
 var button;
 var brushg;
 
+document.getElementById('lat').value = lat;
+document.getElementById('long').value = long;
+document.getElementById('from_year').value = startYear;
+document.getElementById('to_year').value = endYear;
+
 //load the country shape file
 d3.json("./data/countries.geojson",function(error,geodata) {
   if (error) return console.log(error); //unknown error, check the console
@@ -82,34 +94,15 @@ function zoomed() {
           .selectAll("path").style("stroke-width", 1 / zoom.scale() + "px" );
 }
 
-function toggleLeftSideBar(e) {
-  if (e) {
-    stopPropagation(e);
-    e.preventDefault();
-  }
-  const left = document.getElementById('left');
-  if (leftSideBarShown) {
-    left.classList.add("minimized");
-    left.addEventListener("click", toggleLeftSideBar);
-  } else {
-    left.classList.remove("minimized");
-    left.removeEventListener("click", toggleLeftSideBar);
-  }
-  leftSideBarShown = !leftSideBarShown;
-}
-
 function CreateTimeSeries() {
   let lat = $("#lat").val();
   let long = $("#long").val();
   let startYear = $("#from_year").val();
   let endYear = $("#to_year").val();
-  initTimeSeries(lat, long, cli_variable, startYear, endYear);
-  if (!rightSideBarShown) {
-    toggleRightSideBar();
-  }
+  initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type);
 }
 
-function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
+function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type) {
 
   dataset = [];
 
@@ -118,7 +111,8 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
     'year_to': endYear,
     'lat': lat,
     'long': long,
-    'climate_variable': cli_variable
+    'climate_variable': cli_variable,
+    'timeseries_type': aggregation_Type,
   };
 
   $.ajax({
@@ -130,22 +124,37 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
           success: function(data){
               console.log(data);
 
-              $.each(data, function(sel_year, item) {
-                  // console.log(sel_year);
-                  $.each(item, function(j,value) {
-                    
-                    var formatDate = sel_year + "-"+ (j+1);
-                    var obj = { date: formatDate, values: value};
-                    dataset.push(obj);
-                  });
-              });
-                  // format month as a date
-                  dataset.forEach(function(d) {
-                      d.date = d3.time.format("%Y-%m").parse(d.date);
-                  });
-                  //console.log(dataset);
-                  //drawChart(dataset);
-                  drawBrushedChart(dataset);
+              if (aggregation_Type == 'Annual'){
+                Object.entries(data).forEach(([key,value])=>{
+                  var obj = { date: key, values: value};
+                  dataset.push(obj);
+                });
+                console.log(dataset);
+                // format month as a date
+                dataset.forEach(function(d, i) {
+                  var startDate = 1901;
+                  d.date = startDate+i;
+                });
+              }
+              else {
+                $.each(data, function(sel_year, item) {
+                    // console.log(sel_year);
+                    $.each(item, function(j,value) {
+
+                      var formatDate = sel_year + "-"+ (j+1);
+                      var obj = { date: formatDate, values: value};
+                      dataset.push(obj);
+                    });
+                });
+                // format month as a date
+                dataset.forEach(function(d) {
+                    d.date = d3.time.format("%Y-%m").parse(d.date);
+                });
+              }
+
+              console.log(dataset);
+              //drawChart(dataset);
+              drawBrushedChart(dataset);
             },
             error: function(){
                 alert("Error while fetching data");
@@ -156,7 +165,7 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
 }
 
 function drawBrushedChart(dataset) {
-  
+
   $(".metric-chart").remove();
 
   var optwidth        = 600;
@@ -597,13 +606,13 @@ function drawChart(data) {
 
   var line = d3.svg.line()
       .interpolate("basis")
-      .x(function(d) { 
+      .x(function(d) {
         console.log(d);
-        return x(d.date); 
+        return x(d.date);
       })
-      .y(function(d) { 
+      .y(function(d) {
         console.log(d);
-        return y(d.values); 
+        return y(d.values);
       });
 
   var svg = d3.select("#chart").append("svg")
@@ -640,31 +649,9 @@ function drawChart(data) {
       .attr("d", line);
 }
 
-function toggleRightSideBar(e) {
-  if (e) {
-    stopPropagation(e);
-    e.preventDefault();
-  }
-  const rightSideBar = document.getElementById('right');
-  if (rightSideBarShown) {
-    rightSideBar.classList.add("minimized");
-    rightSideBar.addEventListener("click", toggleRightSideBar);
-  } else {
-    rightSideBar.classList.remove("minimized");
-    rightSideBar.removeEventListener("click", toggleRightSideBar);
-  }
-  rightSideBarShown = !rightSideBarShown;
-}
-
-function stopPropagation(evt) {
-  if (evt.stopPropagation !== undefined) {
-    evt.stopPropagation();
-  } else {
-    evt.cancelBubble = true;
-  }
-}
-
 loadCoordinates(cli_variable,year);
+initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type);
+
 
 function loadCoordinates(cli_variable,year)
 {
@@ -754,7 +741,7 @@ function clicked(d,i) {
   $("#long").val(d['geometry']['coordinates'][0]);
 
 }
-  
+
 $(document).ready(function() {
 
   for(var i =1901; i<=2018; i++)
@@ -764,7 +751,7 @@ $(document).ready(function() {
     $("#to_year").append("<option value='"+i+"'>"+i+"</option>");
   }
 
-  
+
 });
 
 //Heatmap Climate variable change event
