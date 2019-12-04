@@ -35,9 +35,10 @@ div.tooltip {
   opacity: 1 !important;
   display: none;
 }
-.map-div {
-  text-align: center;
-  margin: 0 auto;
+.map-div,.options-row {
+  margin: 0 auto !important;
+  width: 100%;
+  max-width: 1600px;
 }
 
 .left-side-bar {
@@ -204,112 +205,120 @@ div.tooltip {
   stroke-width: 1.5px;
 }
 
-#metric-modal .metric-chart text {
+.metric-chart text {
   fill: #565656;
   font-size: 9px;
   font-family: Helvetica, Arial, "sans serif";
 }
 
-#metric-modal .metric-chart text.no-data {
+.metric-chart text.no-data {
   font-size: 16px;
   font-weight: 100;
   fill:#d0d0d0;
 }
 
-#metric-modal .metric-chart rect.no-data {
+.metric-chart rect.no-data {
   fill: #f5f5f5;
 }
 
 /* When there is data ...*/
 
 /* CB: padding to display better on bl.ocks.org */
-#metric-modal {
+{
   padding: 64px;
 }
 
-#metric-modal .metric-chart rect.plot-background{
+.metric-chart rect.plot-background{
   fill: white;
 }
 
-#metric-modal .metric-chart path.line {
+.metric-chart path.line {
   fill: none;
   stroke: #00AA8D; /* default, changed in each theme */
   stroke-width: 1.5px;
   clip-path: url(#clip);
 }
 
-#metric-modal .metric-chart path.area {
+.metric-chart path.area {
   fill: #00AA8D; /* CB default, changed in each theme */
   opacity: 0.6;
   clip-path: url(#clip);
 }
 
-#metric-modal .metric-chart .axis {
+.metric-chart .axis {
   shape-rendering: crispEdges;
 }
 
-#metric-modal .metric-chart .x.axis .domain{
+.metric-chart .x.axis .domain{
   display:none;
 }
 
-#metric-modal .metric-chart .x.axis line {
+.metric-chart .x.axis line {
   stroke: white;
   opacity: 0.4;
 }
 
-#metric-modal .metric-chart .context .x.axis line {
+.metric-chart .context .x.axis line {
   display: none;
 }
 
-#metric-modal .metric-chart .y.axis .domain{
+.metric-chart .y.axis .domain{
   display: none;
 }
 
-#metric-modal .metric-chart .y.axis.title{
+.metric-chart .y.axis.title{
   font-size: 13px;
   font-weight: 100;
 }
 
-#metric-modal .metric-chart .y.axis line {
+.metric-chart .y.axis line {
   stroke: #565656;
   stroke-dasharray: 2,2;
   stroke-opacity: 0.3;
 }
 
-#metric-modal .metric-chart .brush .extent {
+.metric-chart .brush .extent {
   fill-opacity: .07;
   shape-rendering: crispEdges;
   clip-path: url(#clip);
 }
 
-#metric-modal .metric-chart rect.pane {
+.metric-chart rect.pane {
   cursor: move;
   fill: none;
   pointer-events: all;
 }
 /* brush handles  */
-#metric-modal .metric-chart .resize .handle {
+.metric-chart .resize .handle {
   fill: #555;
 }
 
-#metric-modal .metric-chart .resize .handle-mini {
+.metric-chart .resize .handle-mini {
   fill: white;
     stroke-width: 1px;
     stroke: #555;
 }
 
-#metric-modal .metric-chart .scale_button {
+.metric-chart .scale_button {
   cursor: pointer;
 }
 
-#metric-modal .metric-chart .scale_button rect {
+.metric-chart .scale_button rect {
   fill: #eaeaea;
 }
-#metric-modal .metric-chart .scale_button:hover text {
+.metric-chart .scale_button:hover text {
   fill: #417DD6;
   transition: all 0.1s cubic-bezier(.25,.8,.25,1);
 }
 
-#metric-modal .metric-chart text#displayDates  {
+.metric-chart text#displayDates  {
   font-weight: bold;
+}
+.options-row,.options-div
+{
+  margin-bottom: 10px !important;
+}
+.options-div input
+{
+  max-width: 75px !important;
 }

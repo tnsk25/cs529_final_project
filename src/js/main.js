@@ -1,7 +1,7 @@
 var cli_variable="tmp",year=1901;
 var output = document.getElementById("demo");
 //Map dimensions (in pixels)
-var width = 1200, height = 800;
+var width = 1000, height = 600;
 //Map projection
 var projection = d3.geo.robinson()
     .scale(183.56015491730435)
@@ -113,9 +113,6 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
 
   dataset = [];
 
-  var optwidth = 600;
-  var optheight = 400;
-
   var params = {
     'year_from' : startYear,
     'year_to': endYear,
@@ -160,17 +157,17 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear) {
 
 function drawBrushedChart(dataset) {
   
-  $("#metric-modal svg").remove();
+  $(".metric-chart").remove();
 
   var optwidth        = 600;
-  var optheight       = 370;
+  var optheight       = 600;
 
   var margin  = {top: 20, right: 30, bottom: 100, left: 20},
       width = optwidth - margin.left - margin.right,
       height  = optheight - margin.top - margin.bottom;
 
 
-  var margin_context = {top: 320, right: 30, bottom: 20, left: 20},
+  var margin_context = {top: 550, right: 30, bottom: 20, left: 20},
       height_context = optheight - margin_context.top - margin_context.bottom;
 
   dataXrange = d3.extent(dataset, function(d) { return d.date; });
@@ -240,7 +237,7 @@ function drawBrushedChart(dataset) {
       .on("zoom", draw)
       .on("zoomend", brushend);
 
-  vis = d3.select("#metric-modal").append("svg")
+  vis = d3.select(".map-div").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .attr("class", "metric-chart"); // CB -- "line-chart" -- CB //
@@ -733,8 +730,9 @@ function loadCoordinates(cli_variable,year)
 //Create a tooltip, hidden at the start
 function showTooltip(d) {
   moveTooltip();
+  var value = parseInt(d['properties']['Value']);
   tooltip.style("display","block")
-      .html("Latitude: "+d['geometry']['coordinates'][1]+"<br>Longitude: "+d['geometry']['coordinates'][0]);
+      .html("Latitude: "+d['geometry']['coordinates'][1]+"<br>Longitude: "+d['geometry']['coordinates'][0]+"<br>Value: "+value.toFixed(2));
 }
 
 //Move the tooltip to track the mouse

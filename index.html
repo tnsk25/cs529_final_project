@@ -13,12 +13,13 @@
   </head>
   <body>
     <div class="title"><h2>Visualization of Climatic Research Data</h2></div>
-    <div class="left-side-bar" id="left">
-      <button onclick="toggleLeftSideBar(event)" class="close"></button>
-      <div class="card">
-        <h3>Heat Map Menu</h1>
+
+    <div class="row options-row">
+      
+      <div class="col-lg-8 col-md-8">
+        <h3>Heat Map</h3>
         <form>
-          <div class="form-group">
+          <div class="form-inline">
             <label for="variable">Climatic Variables (select one):</label>
             <select class="form-control" id="variable">
               <option id="temp" value="tmp">Temperature (&#176;C)</option>
@@ -32,32 +33,38 @@
               <option id="wet" value="wet">Wet Day Frequency (days)</option>
               <option id="vap" value="vap">Vapour Pressure (hPa)</option>
             </select>
-
+            &nbsp;&nbsp;
             <label for="year">Select year:</label>
             <select class="form-control" id="year"></select>
 
           </div>
         </form>
-        <h3>Time Series Menu</h1>
+      </div>
+
+      <div class="col-lg-4 col-md-4">
+        <h3>Time Series</h3>
         <form action="javascript:;" onsubmit="CreateTimeSeries()">
-          <div class="form-group">
-            <label>Latitude:</label>
+          <div class="form-inline options-div lat-long-div">
+            <label>Lat:</label>
             <input type="text" class="form-control" id="lat">
-            <label>Longitude:</label>
+            &nbsp;&nbsp;
+            <label>Long:</label>
             <input type="text" class="form-control" id="long">
-            <label for="year">From year:</label>
+            &nbsp;&nbsp;
+            <label for="year">From:</label>
             <select class="form-control" id="from_year"></select>
-            <label for="year">To year:</label>
+            &nbsp;&nbsp;
+            <label for="year">To:</label>
             <select class="form-control" id="to_year"></select>
           </div>
-          <button type="submit" class="btn btn-default">Submit</button>
+          <div class="text-center">
+            <button type="submit" class="btn btn-default">Submit</button>
+          </div>
         </form>
       </div>
+
     </div>
-    <div class="right-side-bar card minimized" id="right">
-      <button onclick="toggleRightSideBar(event)" class="close"></button>
-      <div id="metric-modal"></div>
-    </div>
+
     <div class="map-div"></div>
     <div class="loading">
       <img src="./src/images/loading.gif" alt="Loading">
