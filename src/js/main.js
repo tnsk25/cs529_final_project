@@ -3,7 +3,7 @@ var lat = 43.25;
 var long = -88.25;
 var startYear = 1901;
 var endYear = 2018;
-var aggregation_Type="All_Data";
+var aggregation_Type="Annual";
 var month = "";
 
 var output = document.getElementById("demo");
@@ -125,7 +125,7 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
           success: function(data){
               console.log(data);
 
-              if (aggregation_Type == 'Annual'){
+              if (aggregation_Type == 'Annual' || 'monthly'){
                 Object.entries(data).forEach(([key,value])=>{
                   var obj = { date: key, values: value};
                   dataset.push(obj);
@@ -134,9 +134,9 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
                 // format month as a date
                 dataset.forEach(function(d, i) {
                   var startDate = 1901;
-                  d.date = startDate+i;
+                  d.date = new Date(parseInt(startDate+i),0);
                 });
-                createRegularChart();
+                drawChart(dataset);
               }
               else {
                 $.each(data, function(sel_year, item) {
@@ -583,46 +583,42 @@ function scaleDate(d,i) {
 
 function drawChart(data) {
   console.log(data);
-  var margin = {top: 20, right: 80, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+
+  var optwidth        = 600;
+  var optheight       = 600;
+
+  var margin  = {top: 20, right: 30, bottom: 100, left: 20},
+      width = optwidth - margin.left - margin.right,
+      height  = optheight - margin.top - margin.bottom;
 
   var parseDate = d3.time.format("%Y").parse;
 
-  var x = d3.time.scale()
+  x = d3.time.scale()
       .range([0, width]);
 
-  var y = d3.scale.linear()
+  y = d3.scale.linear()
       .range([height, 0]);
 
-  var color = d3.scale.category10();
-
-  var xAxis = d3.svg.axis()
+  xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(d3.time.format("%Y")); // <-- format;
 
-  var yAxis = d3.svg.axis()
+  yAxis = d3.svg.axis()
       .scale(y)
       .orient("left");
 
-  var line = d3.svg.line()
-      .interpolate("basis")
-      .x(function(d) {
-        console.log(d);
-        return x(d.date);
-      })
-      .y(function(d) {
-        console.log(d);
-        return y(d.values);
-      });
+  line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.values); });
 
-  var svg = d3.select("#chart").append("svg")
+  vis = d3.select(".map-div").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("class", "metric-chart");
 
   x.domain(d3.extent(data, function(d) { return d.date; }));
+  console.log(x);
 
   y.domain([
     d3.min(data, function(v) { return v.values; }),
@@ -630,21 +626,17 @@ function drawChart(data) {
   ]);
   console.log(y);
 
-  svg.append("g")
+  vis.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
-  svg.append("g")
+  vis.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
+      .attr("transform", "translate(" + (width) + ", 0)");
 
-  svg.append("path")
+  vis.append("path")
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
