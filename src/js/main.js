@@ -3,7 +3,7 @@ var lat = 43.25;
 var long = -88.25;
 var startYear = 1901;
 var endYear = 2018;
-var aggregation_Type="All_Data";
+var aggregation_Type="Annual";
 var month = "";
 
 var output = document.getElementById("demo");
@@ -617,7 +617,7 @@ function drawChart(data) {
       .attr("height", height + margin.top + margin.bottom)
       .attr("class", "metric-chart");
 
-  x.domain(d3.extent(data, function(d) { return d.date }));
+  x.domain(d3.extent(data, function(d) { return d.date; }));
   console.log(x);
 
   y.domain([
