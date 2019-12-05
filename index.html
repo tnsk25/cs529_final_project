@@ -16,7 +16,7 @@
 
     <div class="row options-row">
       
-      <div class="col-lg-8 col-md-8">
+      <div class="col-lg-7 col-md-7 menu-div">
         <h3>Heat Map</h3>
         <form>
           <div class="form-inline">
@@ -41,9 +41,9 @@
         </form>
       </div>
 
-      <div class="col-lg-4 col-md-4">
+      <div class="col-lg-5 col-md-5 menu-div">
         <h3>Time Series</h3>
-        <form action="javascript:;" onsubmit="CreateTimeSeries()">
+        <form class="time-series-form" action="javascript:;" onsubmit="CreateTimeSeries()">
           <div class="form-inline options-div lat-long-div">
             <label>Lat:</label>
             <input type="text" class="form-control" id="lat">
@@ -56,10 +56,10 @@
             &nbsp;&nbsp;
             <label for="year">To:</label>
             <select class="form-control" id="to_year"></select>
-          </div>
-          <div class="text-center">
+            &nbsp;&nbsp;&nbsp;
             <button type="submit" class="btn btn-default">Submit</button>
           </div>
+            
         </form>
       </div>
 
@@ -72,11 +72,11 @@
 
     <div class="row">
 
-      <div class="col-md-8 col-lg-8"></div>
+      <div class="col-md-7 col-lg-7"></div>
 
-      <div class="col-md-4 col-lg-4">
+      <div class="col-md-5 col-lg-5 menu-div">
         
-          <h3>Aggregation</h3>
+          <h4>Aggregation</h4>
           <div class="form-inline options-div">
               <label>Type:</label>
               <select class="form-control" id="agg_type">
@@ -102,8 +102,8 @@
                 <option value="Dec">December</option>
               </select>
           </div>
-
-          <h3>Add New Location</h3>
+          <br>
+          <h4>Add New Location</h4>
             <div class="form-inline options-div ">
               <label>Lat:</label>
               <input type="text" class="form-control" id="add_lat">

@@ -322,3 +322,7 @@ div.tooltip {
 {
   max-width: 75px !important;
 }
+.menu-div
+{
+  text-align: center;
+}

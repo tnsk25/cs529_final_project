@@ -40,6 +40,7 @@ var leftSideBarShown = true;
 var rightSideBarShown = false;
 //Time Series Variables
 var dataset = [];
+var dataset_new = [];
 var dataXrange;
 var dataYrange;
 var mindate;
@@ -53,7 +54,7 @@ var yAxis;
 var x2;
 var y2;
 var xAxis_context;
-var line;
+var line,line_new;
 var line_context;
 var brush;
 var zoomTS;
@@ -747,6 +748,8 @@ function clicked(d,i) {
 
   $("#lat").val(d['geometry']['coordinates'][1]);
   $("#long").val(d['geometry']['coordinates'][0]);
+  $("#lat").select();
+  $("#long").select();
 
 }
 
@@ -801,4 +804,157 @@ $("#month").change(function(event) {
   month = $(this).val();
 });
 
+
+$(".add-location").click(function(){
+
+dataset_new = [];
+
+  let lat = $("#add_lat").val();
+  let long = $("#add_long").val();
+  let startYear = $("#from_year").val();
+  let endYear = $("#to_year").val();
+
+  var params = {
+    'year_from' : startYear,
+    'year_to': endYear,
+    'lat': lat,
+    'long': long,
+    'climate_variable': cli_variable,
+    'timeseries_type': aggregation_Type,
+    'month': month
+  };
+
+  $.ajax({
+          url: 'http://localhost:3000/api/getData',
+          dataType: 'json',
+          type: 'get',
+          crossDomain: true,
+          data: params,
+          success: function(data){
+              // console.log(data);
+              console.log(aggregation_Type);
+              if (aggregation_Type != 'All_Data'){
+
+                Object.entries(data).forEach(([key,value])=>{
+                  var obj = { date: key, values: value};
+                  dataset_new.push(obj);
+                });
+                // format month as a date
+                dataset_new.forEach(function(d, i) {
+                  var startDate = 1901;
+                  d.date = new Date(parseInt(startDate+i),0);
+                });
+                AddNewChart(dataset,dataset_new);
+
+              }
+
+            },
+            error: function(){
+                alert("Error while fetching data");
+
+            }
+  });
+
+});
+
+
+function AddNewChart(data,data_new) {
+  
+  console.log(data);
+
+  var data_final = [];
+
+  for(var i = 0; i<data.length;i++)
+  {
+    data[i]['values_new'] =  data_new[i]['values'];
+  }
+
+  $(".metric-chart").remove();
+
+  var optwidth        = 600;
+  var optheight       = 600;
+
+  var margin  = {top: 20, right: 30, bottom: 100, left: 20},
+      width = optwidth - margin.left - margin.right,
+      height  = optheight - margin.top - margin.bottom;
+
+  var parseDate = d3.time.format("%Y").parse;
+
+  x = d3.time.scale()
+      .range([0, width]);
+
+  y = d3.scale.linear()
+      .range([height, 0]);
+
+  xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickFormat(d3.time.format("%Y")); // <-- format;
+
+  yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.values); });
+
+  line_new = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.values_new); });  
+
+  vis = d3.select(".map-div").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .attr("class", "metric-chart");
+
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  console.log(x);
+
+  y.domain([
+    d3.min(data, function(v) { return Math.min(v.values, v.values_new); }),
+    d3.max(data, function(v) { return Math.max(v.values, v.values_new); })
+  ]);
+  console.log(y);
+
+  focus = vis.append("g")
+        .attr("class", "focus")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  focus.append("path")
+        .data([data])
+        .attr("class", "line")
+        .style("stroke", "#b50b21")
+        .attr("d", line_new);
+
+  focus.append("path")
+        .data([data])
+        .attr("class", "line")
+        .attr("d", line);
+  
+  focus.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+  focus.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .attr("transform", "translate(" + (width+30) + ", 0)");
+
+  vis.append("text")
+        .attr("class", "y axis title")
+        .text($("#variable").find("option:selected").text())
+        .attr("x", (-(height/2)))
+        .attr("y", 0)
+        .attr("dy", "1em")
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "middle");
+
+}
+
+$("#agg_type,#month").change(function(){
+
+    $(".time-series-form").trigger('submit');
+
+});
 
