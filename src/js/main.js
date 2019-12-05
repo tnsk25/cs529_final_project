@@ -3,8 +3,8 @@ var lat = 43.25;
 var long = -88.25;
 var startYear = 1901;
 var endYear = 2018;
-var aggregation_Type="Annual";
-
+var aggregation_Type="All_Data";
+var month = "";
 
 var output = document.getElementById("demo");
 //Map dimensions (in pixels)
@@ -99,10 +99,10 @@ function CreateTimeSeries() {
   let long = $("#long").val();
   let startYear = $("#from_year").val();
   let endYear = $("#to_year").val();
-  initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type);
+  initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type,month);
 }
 
-function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type) {
+function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type,month) {
 
   dataset = [];
 
@@ -113,6 +113,7 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
     'long': long,
     'climate_variable': cli_variable,
     'timeseries_type': aggregation_Type,
+    'month': month
   };
 
   $.ajax({
@@ -642,7 +643,7 @@ function drawChart(data) {
 }
 
 loadCoordinates(cli_variable,year);
-initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type);
+initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation_Type,month);
 
 
 function loadCoordinates(cli_variable,year)
@@ -740,7 +741,7 @@ $(document).ready(function() {
   {
     $("#year").append("<option value='"+i+"'>"+i+"</option>");
     $("#from_year").append("<option value='"+i+"'>"+i+"</option>");
-    $("#to_year").append("<option value='"+i+"'>"+i+"</option>");
+    $("#to_year").append("<option selected='selected' value='"+i+"'>"+i+"</option>");
   }
 
 
@@ -764,11 +765,25 @@ $("#year").change(function(event) {
   loadCoordinates(cli_variable,year);
 });
 
-$("#aggregation").change(function(event) {
-  if($("#aggregation").val()=="monthly"){
-    $("#agg_month").removeClass("hidden");
+$("#agg_type").change(function(){
+
+  aggregation_Type = $(this).val();
+  if(aggregation_Type=="Monthly")
+  {
+    $(".month-label").removeClass("hidden");
+    $(".month-select").removeClass("hidden");
+    month = "Jan";
   }
+  else
+  {
+    $(".month-label").addClass("hidden");
+    $(".month-select").addClass("hidden");
+  }
+
 });
 
+$("#month").change(function(event) {
+  month = $(this).val();
+});
 
 

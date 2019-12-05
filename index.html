@@ -15,7 +15,7 @@
     <div class="title"><h2>Visualization of Climatic Research Data</h2></div>
 
     <div class="row options-row">
-
+      
       <div class="col-lg-8 col-md-8">
         <h3>Heat Map</h3>
         <form>
@@ -56,23 +56,6 @@
             &nbsp;&nbsp;
             <label for="year">To:</label>
             <select class="form-control" id="to_year"></select>
-            <label for="year">Agregate by:</label>
-            <select class="form-control" id="aggregation">
-              <option></option>
-              <option id="yearly" value="yearly">Year</option>
-              <option id="monthly" value="monthly">Month</option>
-            </select>
-            <select class="form-control hidden" id="agg_month">
-              <option id="jan" value="jan">January</option>
-              <option id="feb" value="feb">February</option>
-              <option id="mar" value="mar">March</option>
-              <option id="apr" value="apr">April</option>
-              <option id="may" value="may">May</option>
-              <option id="jun" value="jun">June</option>
-              <option id="jul" value="jul">July</option>
-              <option id="aug" value="aug">August</option>
-              <option id="sep" value="sep">September</option>
-            </select>
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-default">Submit</button>
@@ -86,6 +69,53 @@
     <div class="loading">
       <img src="./src/images/loading.gif" alt="Loading">
     </div>
+
+    <div class="row">
+
+      <div class="col-md-8 col-lg-8"></div>
+
+      <div class="col-md-4 col-lg-4">
+        
+        <h3>Aggregation</h3>
+        <div class="form-inline options-div">
+            <label>Type:</label>
+            <select class="form-control" id="agg_type">
+              <option value="All_Data">All Data</option>
+              <option value="Annual">Annual</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+            &nbsp;&nbsp;
+            <label class="hidden month-label">Select Month:</label>
+            <select class="form-control month-select hidden" id="month">
+              <option value="Jan">January</option>
+              <option value="Feb">February</option>
+              <option value="Mar">March</option>
+              <option value="Apr">April</option>
+              <option value="May">May</option>
+              <option value="Jun">June</option>
+              <option value="Jul">July</option>
+              <option value="Aug">August</option>
+              <option value="Sep">September</option>
+              <option value="Oct">October</option>
+              <option value="Nov">November</option>
+              <option value="Dec">December</option>
+            </select>
+        </div>
+
+        <h3>Add New Location</h3>
+          <div class="form-inline options-div ">
+            <label>Lat:</label>
+            <input type="text" class="form-control" id="add_lat">
+            &nbsp;&nbsp;
+            <label>Long:</label>
+            <input type="text" class="form-control" id="add_long">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn btn-default add-location">Add</button>
+          </div>
+
+
+    </div>
+
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3-legend/1.1.0/d3-legend.js"></script>
