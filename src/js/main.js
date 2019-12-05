@@ -123,23 +123,12 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
           crossDomain: true,
           data: params,
           success: function(data){
-              console.log(data);
+              // console.log(data);
+              console.log(aggregation_Type);
+              if (aggregation_Type == 'All_Data'){
 
-              if (aggregation_Type == 'Annual' || 'monthly'){
-                Object.entries(data).forEach(([key,value])=>{
-                  var obj = { date: key, values: value};
-                  dataset.push(obj);
-                });
-                console.log(dataset);
-                // format month as a date
-                dataset.forEach(function(d, i) {
-                  var startDate = 1901;
-                  d.date = new Date(parseInt(startDate+i),0);
-                });
-                drawChart(dataset);
-              }
-              else {
-                $.each(data, function(sel_year, item) {
+                 $.each(data, function(sel_year, item) {
+
                     // console.log(sel_year);
                     $.each(item, function(j,value) {
 
@@ -153,6 +142,20 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
                     d.date = d3.time.format("%Y-%m").parse(d.date);
                 });
                 drawBrushedChart(dataset);
+
+              }
+              else {
+
+                Object.entries(data).forEach(([key,value])=>{
+                  var obj = { date: key, values: value};
+                  dataset.push(obj);
+                });
+                // format month as a date
+                dataset.forEach(function(d, i) {
+                  var startDate = 1901;
+                  d.date = new Date(parseInt(startDate+i),0);
+                });
+                drawChart(dataset);
               }
 
             },
@@ -582,7 +585,8 @@ function scaleDate(d,i) {
 };
 
 function drawChart(data) {
-  console.log(data);
+  
+  $(".metric-chart").remove();
 
   var optwidth        = 600;
   var optheight       = 600;
@@ -626,20 +630,31 @@ function drawChart(data) {
   ]);
   console.log(y);
 
-  vis.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+  focus = vis.append("g")
+        .attr("class", "focus")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  vis.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .attr("transform", "translate(" + (width) + ", 0)");
+  focus.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+  focus.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .attr("transform", "translate(" + (width+30) + ", 0)");
+  focus.append("path")
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", line);
+  vis.append("text")
+        .attr("class", "y axis title")
+        .text($("#variable").find("option:selected").text())
+        .attr("x", (-(height/2)))
+        .attr("y", 0)
+        .attr("dy", "1em")
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "middle");
 
-  vis.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
 }
 
 loadCoordinates(cli_variable,year);
@@ -680,7 +695,7 @@ function loadCoordinates(cli_variable,year)
         .labelOffset(12);
 
     svg.append("g")
-    .attr("transform", "translate(1100, 580)")
+    .attr("transform", "translate(50, 375)")
     .attr("class","legend")
     .call(colorLegend);
 
