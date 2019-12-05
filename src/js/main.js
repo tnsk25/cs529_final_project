@@ -135,6 +135,7 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
                   var startDate = 1901;
                   d.date = startDate+i;
                 });
+                createRegularChart();
               }
               else {
                 $.each(data, function(sel_year, item) {
@@ -150,11 +151,9 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
                 dataset.forEach(function(d) {
                     d.date = d3.time.format("%Y-%m").parse(d.date);
                 });
+                drawBrushedChart(dataset);
               }
 
-              console.log(dataset);
-              //drawChart(dataset);
-              drawBrushedChart(dataset);
             },
             error: function(){
                 alert("Error while fetching data");
@@ -163,6 +162,7 @@ function initTimeSeries(lat, long, cli_variable, startYear, endYear, aggregation
   });
 
 }
+
 
 function drawBrushedChart(dataset) {
 
@@ -770,6 +770,12 @@ $("#variable").change(function(event) {
 $("#year").change(function(event) {
   year = $(this).val();
   loadCoordinates(cli_variable,year);
+});
+
+$("#aggregation").change(function(event) {
+  if($("#aggregation").val()=="monthly"){
+    $("#agg_month").removeClass("hidden");
+  }
 });
 
 
