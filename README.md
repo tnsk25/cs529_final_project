@@ -3,7 +3,7 @@
 # Data link: 
 CRU-Ts: https://crudata.uea.ac.uk/cru/data/hrg/
 
-Download the data netCDF files for all the 10 climate variables and use the Extract_Yearly/Monthly.R file(s) to convert the netCDF file into user readable csv format. Organize each variable into a separate directory.
+Download the netCDF files for all the 10 climate variables and use the Extract_Yearly/Monthly.R file(s) to convert the netCDF file into user readable csv format. Organize each variable into a separate directory.
 
 Convert the yearly csv files to geojson format for each variable for each year(1901-2018) using the csvToGeojsonScript.ipynb file.
 
